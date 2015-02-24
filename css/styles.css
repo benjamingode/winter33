@@ -18,3 +18,17 @@
   .darkness {
       background-color: black;
   }
+
+  .rotate-right-45 {
+    -webkit-transform:rotate(45deg);
+    -moz-transform:rotate(45deg);
+    -o-transform:rotate(45deg);
+    .rotate(45deg);
+}
+
+  .rotate-left-45 {
+    -webkit-transform:rotate(-45deg);
+    -moz-transform:rotate(-45deg);
+    -o-transform:rotate(-45deg);
+    .rotate(45deg);
+}

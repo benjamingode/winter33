@@ -22,7 +22,7 @@
     -->
     <style>
     body {
-        background-color:lightyellow;
+        background-color:lightred;
     }
     </style>
 
@@ -52,6 +52,7 @@
             //console.log("togglesensors");
             $("#allsensors").toggleClass('hidden');
         });
+        //var socket = io.connect('http://10.48.102.xxx:3001'); //change this to match your robot
         var socket = io.connect('http://10.48.102.xxx:3001'); //change this to match your robot
         batterycapacity(socket);
         leftsignal(socket);
@@ -153,7 +154,7 @@
             console.log(event.which);
             speed = $("#speed").text();
             //speed = 100;
-            if (event.which === 87) //w - move forward
+            if (event.which === 87 || event.which === 38) //w, up arrow - move forward
             {
                 //socket.emit('sing', [[300,300]]);
                 event.preventDefault();
@@ -167,7 +168,7 @@
 
             }
 
-            if (event.which === 83) //s - move backward
+            if (event.which === 83 || event.which === 40) //s, down arrow - move backward
             {
                 event.preventDefault();
                 speed = $("#speed").text();
@@ -179,11 +180,13 @@
                 });
             }
 
-            if (event.which === 65) //d - move right
+
+
+            if (event.which === 37) //left arrow - move right
             {
                 event.preventDefault();
                 speed = $("#speed").text();
-                speed = 50;
+                speed = 25;
                 $("#speed").text(speed);
                 socket.emit('drive', {
                     left: speed,
@@ -192,11 +195,37 @@
 
             }
 
-            if (event.which === 68) //a - move left
+            if (event.which === 65) //a - forward left
             {
                 event.preventDefault();
                 speed = $("#speed").text();
-                speed = 50;
+                (speed < 25) ? speed=25 : speed = speed;
+                $("#speed").text(speed);
+                socket.emit('drive', {
+                    left: Math.round(speed),
+                    right: Math.round(speed -25)
+                });
+
+            }
+
+            if (event.which === 68) //d - forward left
+            {
+                event.preventDefault();
+                speed = $("#speed").text();
+                (speed < 25) ? speed=25 : speed = speed;
+                $("#speed").text(speed);
+                socket.emit('drive', {
+                    left: Math.round(speed - 25),
+                    right: Math.round(speed)
+                });
+
+            }
+
+            if (event.which === 39) //right arrow - move left
+            {
+                event.preventDefault();
+                speed = $("#speed").text();
+                speed = 25;
                 $("#speed").text(speed);
                 socket.emit('drive', {
                     left: -speed,
@@ -295,7 +324,7 @@
         </div>
         <div class="row">
             <div class="col-md-2">
-                <button class="btn-primary btn-lg btn-block" id="forward">Forward-left<span class="glyphicon glyphicon-arrow-up"></span>
+                <button class="btn-primary btn-lg btn-block" id="forward"><span class="glyphicon glyphicon-arrow-up rotate-left-45"></span>Forward-left
                 </button>
             </div>
             <div class="col-md-2">
@@ -304,15 +333,14 @@
             </div>
             <div class="col-md-2">
                 </button>
-                <button class="btn-primary btn-lg btn-block" id="forward">Forward-right<span class="glyphicon glyphicon-arrow-up"></span>
+                <button class="btn-primary btn-lg btn-block" id="forward">Forward-right<span class="glyphicon glyphicon-arrow-up rotate-right-45"></span>
                 </button>
             </div>
 
         </div>
         <div class="row">
             <div class="col-md-2">
-                <button class="btn-primary btn-lg btn-block" id="turnLeft">Left
-                    <span class="glyphicon glyphicon-arrow-left"></span>
+                <button class="btn-primary btn-lg btn-block" id="turnLeft"><span class="glyphicon glyphicon-arrow-left"> Left</span>
                 </button>
             </div>
             <div class="col-md-2 ">
@@ -329,7 +357,7 @@
         </div>
         <div class="row">
             <div class="col-md-2">
-                <button class="btn-primary btn-lg btn-block" id="backward">Back-Left<span class="glyphicon glyphicon-arrow-down"></span>
+                <button class="btn-primary btn-lg btn-block" id="backleft">Back-Left
                 </button>
             </div>
             <div class="col-md-2">
@@ -337,7 +365,7 @@
                 </button>
             </div>
             <div class="col-md-2">
-                <button class="btn-primary btn-lg btn-block" id="backward">Back-Right<span class="glyphicon glyphicon-arrow-down"></span>
+                <button class="btn-primary btn-lg btn-block" id="backright">Back-Right
                 </button>
             </div>
         </div>
