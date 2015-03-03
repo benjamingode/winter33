@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>All Sensors</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <style>
+    body {
+        background-color: AliceBlue; //make different so pages can be known on sight.
+    }
+    </style>
+
+    <script>
+    $(document).ready(function() {
+
+        var socket1 = io.connect('http://10.48.102.xxx:3001'); //change this to match your robot
+        $("#robotname1").text(socket1.socket.options.host);
+        var socket2 = io.connect('http://10.48.102.yyy:3001'); //change this to match your robot
+        $("#robotname2").text(socket2.socket.options.host);
+
+        setInterval(function () {
+            $('.robotdiv1').fadeTo('slow',.2);
+            $('.robotdiv2').fadeTo('slow',.2);
+
+        }, 3000);
+
+
+        socket1.on('sensordata', function(data) {
+
+            var batCapPer = data.battery.capacity.percent;
+            $("#batCapPer1").text((batCapPer * 100).toFixed(2));
+            var power = data.battery.voltage.volts * data.battery.current.amps;
+            $("#power1").text(power.toFixed(2));
+             $('.robotdiv1').stop(true).fadeTo('fast',1);
+            //$("#charging1").text(power > 0);
+        });
+
+
+        socket2.on('sensordata', function(data) {
+            var batCapPer = data.battery.capacity.percent;
+            $("#batCapPer2").text((batCapPer * 100).toFixed(2));
+            var power = data.battery.voltage.volts * data.battery.current.amps;
+            $("#power2").text(power.toFixed(2));
+            $('.robotdiv2').stop(true).fadeTo('fast',1);
+            //$("#charging").text(power > 0);
+        });
+
+
+        $("#passiveMode").click(function(e) {
+            socket1.emit('passiveMode');
+            socket2.emit('passiveMode');
+        });
+        $("#safeMode").click(function(e) {
+            socket1.emit('safeMode');
+            socket2.emit('safeMode');
+
+        });
+
+        $("#fullMode").click(function(e) {
+            socket1.emit('fullMode');
+            socket2.emit('fullMode');
+        });
+
+
+        $('body').keydown(function(event) {
+            console.log('event.which', event.which);
+
+            if (event.which === 49) //1 -- Play tune when 1 is pressed
+
+            {
+                event.preventDefault();
+                socket1.emit('sing', [
+                    [650, 100],
+                    [640, 100]
+                ]);
+
+                socket2.emit('sing', [
+                    [640, 100],
+                    [650, 100]
+                ]);
+            }
+
+        });
+
+    });
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <button class="btn-success btn col-md-2" id="passiveMode">Passive Mode</button>
+            <button class="btn-warning btn col-md-2" id="safeMode">Safe Mode</button>
+            <button class="btn-danger btn col-md-2" id="fullMode">Full Mode</button>
+        </div>
+        <h3 id="robotname1">...</h3>
+        <div class="row robotdiv1" >
+
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Power</div>
+                <div class="sensor-value" id="power1">...</div>
+            </div>
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Capacity %</div>
+                <div class="sensor-value" id="batCapPer1">...</div>
+            </div>
+        </div>
+
+
+        <h3 id="robotname2">...</h3>
+
+        <h3>Battery</h3>
+        <div class="row robotdiv2">
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Power</div>
+                <div class="sensor-value" id="power2">...</div>
+            </div>
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Capacity %</div>
+                <div class="sensor-value" id="batCapPer2">...</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

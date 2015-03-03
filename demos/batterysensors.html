@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>All Sensors</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <style>
+    body {
+        background-color: AliceBlue; //make different so pages can be known on sight.
+    }
+    </style>
+
+    <script>
+    $(document).ready(function() {
+
+        $("#togglesensors").click(function(e) {
+            $("#allsensors").toggleClass('hidden');
+        });
+        var socket = io.connect('http://10.48.102.xxx:3001'); //change this to match your robot
+        socket.on('sensordata', function(data) {
+            $("#voltage").text(data.battery.voltage.volts.toFixed(2));
+            $("#current").text(data.battery.current.amps.toFixed(2));
+            var power = data.battery.voltage.volts * data.battery.current.amps;
+            $("#power").text(power.toFixed(2));
+            var batCapPer = data.battery.capacity.percent;
+            $("#batCapPer").text((batCapPer * 100).toFixed(2));
+            $("#tempF").text(data.battery.temperature.fahrenheit.toFixed(2));
+            $("#charging").text(power > 0);
+            $("#allsensors").text(JSON.stringify(data));
+        });
+
+        $("#passiveMode").click(function(e) {
+            socket.emit('passiveMode');
+        });
+        $("#safeMode").click(function(e) {
+            socket.emit('safeMode');
+        });
+
+        $("#fullMode").click(function(e) {
+            socket.emit('fullMode');
+        });
+
+
+        $('body').keydown(function(event) {
+            console.log('event.which', event.which);
+
+            if (event.which === 49) //1 -- Play tune when 1 is pressed
+
+            {
+                event.preventDefault();
+                socket.emit('sing', [
+                    [640, 100],
+                    [650, 100]
+                ]);
+            }
+
+        });
+
+    });
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+
+        <h3>Robot Control</h3>
+        <div class="row">
+            <button class="btn-success btn col-md-2" id="passiveMode">Passive Mode</button>
+            <button class="btn-warning btn col-md-2" id="safeMode">Safe Mode</button>
+            <button class="btn-danger btn col-md-2" id="fullMode">Full Mode</button>
+        </div>
+        <h3>Battery</h3>
+        <div class="row">
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Charging</div>
+                <div class="sensor-value" id="charging">...</div>
+            </div>
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Voltage</div>
+                <div class="sensor-value" id="voltage">...</div>
+            </div>
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Current</div>
+                <div class="sensor-value" id="current">...</div>
+            </div>
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Power</div>
+                <div class="sensor-value" id="power">...</div>
+            </div>
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Capacity %</div>
+                <div class="sensor-value" id="batCapPer">...</div>
+            </div>
+            <div class="col-xs-2 sensor-block">
+                <div class="sensor-title">Temp F</div>
+                <div class="sensor-value" id="tempF">...</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <button id="togglesensors">Toggle Sensors</button>
+            <div class="hidden" id="allsensors">...</div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
