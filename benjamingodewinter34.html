@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -24,17 +25,84 @@
     body {
         background-color:lightred;
     }
+    button {
+        padding: 10px;
+        
+    }
     </style>
 
     <script>
     var tempo = 2000;
     mysong = [
-        [261, tempo * .125],
-        [261, tempo * .125],
-        [261, tempo * .125],
-        [698, tempo * .25],
-        [880, tempo * .25],
-        [null, 50]
+       [740.0, tempo * .125],
+        [784.0, tempo * .125],
+        [439.9, tempo * .125],
+        [740.0, tempo * .25],
+        [784.0, tempo * .1875],
+        [740.0, tempo * .125],
+        [784.0, tempo * .125],
+        [439.9, tempo * .125],
+        [784.0, tempo * .25],
+        [740.0, tempo * .25],
+        [440.0, tempo * .125],
+        [659.3, tempo * .125],
+        [740.0, tempo * .125],
+        [440.0, tempo * .125],
+        [659.3, tempo * .25],
+        [740.0, tempo * .25],
+        [440.0, tempo * .125],
+        [587.3, tempo * .5],
+        [523.2, tempo * .5],
+        [740.0, tempo * .125],
+        [784.0, tempo * .125],
+        [493.9, tempo * .125],
+        [740.0, tempo * .25],
+        [784.0, tempo * .1875],
+        [784.0, tempo * .125],
+        [740.0, tempo * .125],
+        [493.9, tempo * .125],
+        [784.0, tempo * .25],
+        [740.0, tempo * .25],
+        [440.0, tempo * .125],
+        [659.3, tempo * .125],
+        [740.0, tempo * .125],
+        [440.0, tempo * .125],
+        [659.3, tempo * .25],
+        [740.0, tempo * .25],
+        [440.0, tempo * .625],
+        [554.4, tempo * .1875],
+         [329.6, tempo * .125], 
+            [493.9, tempo * .25], 
+            [493.9, tempo * .25], 
+            [493.9, tempo * .25],
+            [493.9, tempo * .125], 
+            [493.9, tempo * .125], 
+            [493.9, tempo * .125], 
+            [440.0, tempo * .125],  
+            [392.0, tempo * .125], 
+            [392.0, tempo * .375],
+            [null, tempo * .03125],
+            [392.0, tempo * .125],
+            [392.0, tempo * .125],  
+            [440.0, tempo * .125], 
+            [440.0, tempo * .50], 
+            [null, tempo * .125], //16
+            [440.0, tempo * .125], 
+            [392.0, tempo * .125],
+            [329.6, tempo * .625],
+            [261.6, tempo * .375], //c
+            [329.6, tempo * .125],
+            [493.9, tempo * .125],
+            [493.9, tempo * .125],
+            [493.9, tempo * .125],
+            [493.9, tempo * .375],
+            [587.3, tempo * .125],
+            [587.3, tempo * .25],
+            [493.9, tempo * .50],
+            [392.0, tempo * .125],
+            [392.0, tempo * .125],
+            [440.0, tempo * .125],
+            [493.9, tempo * .375]
     ];
 
     function sensop(mag) {
@@ -52,8 +120,8 @@
             //console.log("togglesensors");
             $("#allsensors").toggleClass('hidden');
         });
-        //var socket = io.connect('http://10.48.102.108:3002'); //change this to match your robot
-        var socket = io.connect('http://10.48.102.xxx:3001'); //change this to match your robot
+        //var socket = io.connect('http://10.48.102.108:3001'); //change this to match your robot
+        var socket = io.connect('http://10.48.102.108:3001'); //change this to match your robot
         batterycapacity(socket);
         leftsignal(socket);
         front_leftsignal(socket);
@@ -317,7 +385,7 @@
             <div class="col-xs-3">
 
 
-                <button id="playsong" class="btn-success btn-lg btn-block">Play Music
+                <button id="playsong" class="btn-success btn-lg btn-block">Play Let it Go
                     <span class="glyphicon glyphicon-music"></span>
                 </button>
             </div>

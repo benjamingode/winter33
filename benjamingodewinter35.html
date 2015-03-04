@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Final Project</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="http://saasmath.seattleacademy.org/css/bootstrap.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+        <script>
+        var tempo = 2000;
+        mysong = [
+            [740.0, tempo * .125],
+        [784.0, tempo * .125],
+        [439.9, tempo * .125],
+        [740.0, tempo * .25],
+        [784.0, tempo * .1875],
+        [740.0, tempo * .125],
+        [784.0, tempo * .125],
+        [439.9, tempo * .125],
+        [784.0, tempo * .25],
+        [740.0, tempo * .25],
+        [440.0, tempo * .125],
+        [659.3, tempo * .125],
+        [740.0, tempo * .125],
+        [440.0, tempo * .125],
+        [659.3, tempo * .25],
+        [740.0, tempo * .25],
+        [440.0, tempo * .125],
+        [587.3, tempo * .5],
+        [523.2, tempo * .5],
+        [740.0, tempo * .125],
+        [784.0, tempo * .125],
+        [493.9, tempo * .125],
+        [740.0, tempo * .25],
+        [784.0, tempo * .1875],
+        [784.0, tempo * .125],
+        [740.0, tempo * .125],
+        [493.9, tempo * .125],
+        [784.0, tempo * .25],
+        [740.0, tempo * .25],
+        [440.0, tempo * .125],
+        [659.3, tempo * .125],
+        [740.0, tempo * .125],
+        [440.0, tempo * .125],
+        [659.3, tempo * .25],
+        [740.0, tempo * .25],
+        [440.0, tempo * .625],
+        [554.4, tempo * .1875],
+         [329.6, tempo * .125], 
+            [493.9, tempo * .25], 
+            [493.9, tempo * .25], 
+            [493.9, tempo * .25],
+            [493.9, tempo * .125], 
+            [493.9, tempo * .125], 
+            [493.9, tempo * .125], 
+            [440.0, tempo * .125],  
+            [392.0, tempo * .125], 
+            [392.0, tempo * .375],
+            [null, tempo * .03125],
+            [392.0, tempo * .125],
+            [392.0, tempo * .125],  
+            [440.0, tempo * .125], 
+            [440.0, tempo * .50], 
+            [null, tempo * .125], //16
+            [440.0, tempo * .125], 
+            [392.0, tempo * .125],
+            [329.6, tempo * .625],
+            [261.6, tempo * .375], //c
+            [329.6, tempo * .125],
+            [493.9, tempo * .125],
+            [493.9, tempo * .125],
+            [493.9, tempo * .125],
+            [493.9, tempo * .375],
+            [587.3, tempo * .125],
+            [587.3, tempo * .25],
+            [493.9, tempo * .50],
+            [392.0, tempo * .125],
+            [392.0, tempo * .125],
+            [440.0, tempo * .125],
+            [493.9, tempo * .375]
+        ];
+
+         var tempo = 2000;
+        birthdaysong = [
+            [392.0, tempo * .125], //G
+            [392.0, tempo * .125], //G
+            [440.0, tempo * .25], //A
+            [392.0, tempo * .25], //G
+            [523.3, tempo * .25], //C
+            [493.3, tempo * .50], //B
+            [null, tempo * .15],
+            [null, tempo * .10],
+            [392.0, tempo * .125], //G
+            [392.0, tempo * .125], //G
+            [440.0, tempo * .25], //A
+            [392.0, tempo * .25], //G
+            [587.3, tempo * .25], //D
+            [523.3, tempo * .50], //C
+            [null, tempo * .15],
+            [null, tempo * .10],
+
+            [392.0, tempo * .125], //G 
+            [392.0, tempo * .125], //G
+            [784.0, tempo * .25], //G
+            [659.3, tempo * .25], //E
+            [523.3, tempo * .25], //C
+            [493.3, tempo * .25], //B
+            [440.0, tempo * .25], //A
+            [null, tempo * .25],
+            [698.5, tempo * .125], //F
+            [698.5, tempo * .125], //F
+            [659.3, tempo * .25], //E
+            [523.3, tempo * .25], //C
+            [659.3, tempo * .25], //E
+            [587.3, tempo * .50], //D
+            [null, tempo * .15],
+            [null, tempo * .10],
+        ];
+
+
+
+        $(document).ready(function() {
+            var socket = io.connect('http://10.48.102.108:3001');
+            socket.on('sensordata', function(data) {
+                //console.log(data);
+                $("#voltage").text(data.battery.voltage.volts);
+                $("#left").text(data.cliff_sensors.left.signal.raw);
+                $("#front_left").text(data.cliff_sensors.front_left.signal.raw);
+                $("#front_right").text(data.cliff_sensors.front_right.signal.raw);
+                $("#right").text(data.cliff_sensors.right.signal.raw);
+                $("#allsensors").text(JSON.stringify(data));
+            });
+
+
+            $("#forward").click(function(e) {
+                console.log('forward');
+                socket.emit('drive', {
+                    left: 15,
+                    right: 15
+                });
+            });
+
+            $("#halt").click(function(e) {
+                console.log('halt');
+                socket.emit('drive', {
+                    left: 0,
+                    right: 0
+                });
+            });
+
+            $("#playsong").click(function(e) {
+                socket.emit('sing', mysong);
+            });
+
+             $("#birthdaysong").click(function(e) {
+                socket.emit('sing', birthdaysong);
+            });
+
+            $("#safeMode").click(function(e) {
+                socket.emit('safeMode');
+            });
+
+            $("#fullMode").click(function(e) {
+                socket.emit('fullMode');
+            });
+
+
+            $('body').keydown(function(event) {
+                console.log(event.which);
+                speed = $("#speed").text();
+                //speed = 100;
+                if (event.which === 38) //w - move forward
+                {
+                    speed = $("#speed").text();
+                    speed = speed * 1 + 50;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: speed,
+                        right: speed
+                    });
+
+                }
+                if (event.which === 87) //w - move forward
+                {
+                    speed = $("#speed").text();
+                    speed = speed * 1 + 50;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: speed,
+                        right: speed
+                    });
+
+                }
+
+                if (event.which === 83) //s - move backward
+                {
+                    speed = $("#speed").text();
+                    speed = speed * 1 - 50;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: speed,
+                        right: speed
+                    });
+                }
+                if (event.which === 40) //s - move backward
+                {
+                    speed = $("#speed").text();
+                    speed = speed * 1 - 50;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: speed,
+                        right: speed
+                    });
+                }
+
+
+                if (event.which === 65) //d - move right
+                {
+                    speed = $("#speed").text();
+                    speed = 150;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: speed,
+                        right: -speed
+                    });
+
+                }
+                if (event.which === 39) //d - move right
+                {
+                    speed = $("#speed").text();
+                    speed = 150;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: speed,
+                        right: -speed
+                    });
+
+                }
+
+                if (event.which === 68) //a - move left
+                {
+                    speed = $("#speed").text();
+                    speed = 150;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: -speed,
+                        right: speed
+                    });
+                }
+                 if (event.which === 37) //a - move left
+                {
+                    speed = $("#speed").text();
+                    speed = 150;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: -speed,
+                        right: speed
+                    });
+                }
+
+                if (event.which === 32) //space - stop
+
+                {
+                    speed = $("#speed").text();
+                    speed = 150;
+                    $("#speed").text(speed);
+                    socket.emit('drive', {
+                        left: speed,
+                        right: speed
+                    });
+                }
+            });
+
+        });
+        </script>
+      
+         <style>
+            button {
+                font-family: arial;
+            }
+            
+            body {
+            background-color:#505050;}
+            
+        </style>
+
+    </head>
+
+   
+    <body>
+        <div class="container">
+         <div class="jumbotron">
+            <div class ="row">
+            <h3><font size="6" face="Britannic Bold"><b>iRobot Roomba Control</b></font></h3>
+             <div class ="row">
+                <button  class="btn-success btn col-xs-2" id="safeMode">Safe Mode</button>
+                <button  class="btn-danger btn col-xs-3" id="fullMode">Full Mode</button>
+            </div>
+            </div class="jumbotron">
+            </div class ="row">
+             <div class="jumbotron">
+           
+            <div class ="row">
+                <div class="col-xs-3">
+                    <button  class="btn btn-danger" btnid="stop">Stop
+                    <span class="glyphicon glyphicon-stop"></span></button>
+                    <button  class="btn btn-primary" width=""  id="go">Go
+                    <span class="glyphicon glyphicon-play"></span></button>
+                    <button id ="playsong"  class="btn-info btn-lg btn-block">Play Let it Go
+                    <span class="glyphicon glyphicon-music"></span></button>
+                    <button id ="birthdaysong"  class="btn-success btn-lg btn-block">Play Happy Birthday!!
+                    <span class="glyphicon glyphicon-music"></span></button>
+                     <button id ="turnOneSec" class="btn-primary btn-lg btn-block">Turn For One Second
+                    <span class="glyphicon glyphicon-refresh"></span></button>
+                    <!--
+                    <button id ="dance" class="btn-primary btn-lg btn-block">Dance
+                    <span class="glyphicon glyphicon-fire"></span></button>
+                    -->
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2 col-md-offset-5">
+                    <button  class="btn-warning btn-lg btn-block" id="forward">Forward<span class="glyphicon glyphicon-arrow-up"></span></button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-3">
+                    <button  class="btn-warning btn-lg btn-block" id="turnleft">Left<span class="glyphicon glyphicon-arrow-left"></span></button>
+                </div>
+                <div class="col-md-2 col-md-offset-2">
+                    <button  class="btn-warning btn-lg btn-block" id="turnright">Right<span class="glyphicon glyphicon-arrow-right"></span></button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-5">
+                    <button  class="btn-warning btn-lg btn-block" id="backward">Backward<span class="glyphicon glyphicon-arrow-down"></span></button>
+                </div>
+                <!--
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="alert alert-info wordwrap" id="left">Sensors ...</div>
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-offset-6">
+                                <div class="alert alert-info wordwrap" id="right">Sensors ...</div>
+                                <div>
+                                    Voltage  <span id="voltage">...</span>
+                                </div>
+                                <div>speed:<span id="speed">100</span></div>
+                                <div>
+                                    front_left  <span id="front_left">...</span>
+                                    front_right <span id="front_right">...</span>
+                                </div>
+                                
+                                <div id="allsensors">...</div>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
